@@ -3,9 +3,10 @@ import { useDidMount } from 'hooks';
 import PropType from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, withRouter } from 'react-router-dom';
-import { applyFilter, resetFilter } from 'redux/actions/filterActions';
-import { selectMax, selectMin } from 'selectors/selector';
+// import { useNavigate, withRouter } from 'react-router-dom';
+import { useNavigate, useLocation,useParams } from 'react-router-dom';
+import { applyFilter, resetFilter } from '../../redux/actions/filterActions';
+import { selectMax, selectMin } from '../../selectors/selector';
 import PriceRange from './PriceRange';
 
 const Filters = ({ closeModal }) => {
@@ -21,7 +22,7 @@ const Filters = ({ closeModal }) => {
     sortBy: filter.sortBy
   });
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useNavigate();
   const didMount = useDidMount();
 
   const max = selectMax(products);
@@ -76,6 +77,8 @@ const Filters = ({ closeModal }) => {
       closeModal();
     }
   };
+
+ 
 
   return (
     <div className="filters">
@@ -158,6 +161,25 @@ const Filters = ({ closeModal }) => {
     </div>
   );
 };
+
+ // Try To fixed WithrRouter
+
+ function withRouter(Component) {
+  function ComponentWithRouterProp(props) {
+    let location = useLocation();
+    let navigate = useNavigate();
+    let params = useParams();
+    return (
+      <Component
+        {...props}
+        router={{ location, navigate, params }}
+      />
+    );
+  }
+
+  return ComponentWithRouterProp;
+}
+
 
 Filters.propTypes = {
   closeModal: PropType.func.isRequired
